@@ -2,6 +2,7 @@ pipeline{
     agent any
      environment {
 		DOCKERHUB_CREDENTIALS = credentials('DockerHub')
+	        GIT_COMMIT = sh(returnStdout: true, script: 'git rev-parse HEAD')
 	}
     stages {
 	  /*  stage('name'){
@@ -44,7 +45,7 @@ pipeline{
 	    
 	    stage('git commit id'){
 		    steps{
-			    sh'git_id=$(git rev-parse --short "$GITHUB_SHA")'
+// 			    sh'git_id=$(git rev-parse --short "$GITHUB_SHA")'
 			    sh'echo $git_id'
 		    }
 	    }
