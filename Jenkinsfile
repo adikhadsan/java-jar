@@ -15,20 +15,20 @@ pipeline{
     
     
         
-        stage('maven location') {
-             steps {
+//         stage('maven location') {
+//              steps {
             
-                sh'''
-                  pwd
-                  cd /var/lib/jenkins/workspace/${JOB_NAME}/
-                  ls
-                  mvn clean
-                  mvn install
+//                 sh'''
+//                   pwd
+//                   cd /var/lib/jenkins/workspace/${JOB_NAME}/
+//                   ls
+//                   mvn clean
+//                   mvn install
               
               
-                  '''
-             }
-         }
+//                   '''
+//              }
+//          }
 	
 	stage('	Copy jar file'){
 	     steps{
@@ -37,14 +37,19 @@ pipeline{
 		 sh'ls'    
 		// sh 'docker build -t spring-img --build-arg dokcerjob=$JOB_NAME .'
 	     }
-	 } 	    
+	 }
+	    
+	  
 	
 	    
-	
+	    stage('git commit id'){
+		    steps{
+			    sh'git_id=$(git rev-parse --short "$GITHUB_SHA")'
+			    sh'echo $git_id'
 	
 	 stage('docker build'){
 	     steps{
-		 sh'docker build -t 8485012281/spring-img-jar .'
+		 sh'docker build -t 8485012281/spring-img-jar:$git_id .'
 		// sh 'docker build -t spring-img-jar --build-arg dokcerjob=$JOB_NAME .'
 	     }
 	 } 
@@ -64,12 +69,12 @@ pipeline{
 	 } 
 	 stage('docker push'){
 	     steps{
-		 sh 'docker push 8485012281/spring-img-jar'
+		 sh 'docker push 8485012281/spring-img-jar:$git_id'
 	     }
 	 }
 	 stage('docker run'){
 	     steps{
-		 sh 'docker run -d -p 9192:8080 --name spring-container 8485012281/spring-img-jar'
+		 sh 'docker run -d -p 9192:8080 --name spring-container_jar:$git_id 8485012281/spring-img-jar:$git_id'
 		 sh 'sleep 30'
 		 sh 'docker ps'
 	     }
