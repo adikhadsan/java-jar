@@ -46,6 +46,8 @@ pipeline{
 		    steps{
 			    sh'git_id=$(git rev-parse --short "$GITHUB_SHA")'
 			    sh'echo $git_id'
+		    }
+	    }
 	
 	 stage('docker build'){
 	     steps{
